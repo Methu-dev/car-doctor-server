@@ -35,7 +35,8 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
    
-    const servicesCollection = client.db('carDoctor').collection('services')
+    const servicesCollection = client.db('carDoctor').collection('services');
+    const bookingCollection = client.db('carDoctor').collection('bookings');
       
     app.get('/services', async(req, res)=>{
         const cursor = servicesCollection.find();
@@ -47,7 +48,8 @@ async function run() {
     app.get('/services/:id', async (req, res)=>{
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
-
+          console.log(query);
+          
         const options = {
            
             projection: { title: 1, 
@@ -59,6 +61,14 @@ async function run() {
 
         const result = await servicesCollection.findOne(query, options);
         res.send(result)
+    })
+
+    //bokings
+    app.post('/bookings', async (req, res)=>{
+      const boking = req.body;
+      console.log(boking)
+      const result = await bookingCollection.insertOne(boking)
+      res.send(result)
     })
 
     // Send a ping to confirm a successful connection
